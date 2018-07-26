@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,7 +68,7 @@ public class WtccatController {
     }
 
     private static List<Map> getWsl() throws IOException {
-        return Files.lines(PATH)
+        return Files.lines(PATH,Charset.forName("UTF-8"))
                 .map(p -> {
                     var split = p.split(" ");
                     if (split.length!=2)
