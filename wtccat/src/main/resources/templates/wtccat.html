@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>今天哪些网站可以看?</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <style type="text/css">
+        .success{
+            color: green;
+        }
+        .failure{
+            color: red;
+        }
+        .connecting{
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <ol>
+            <li v-for="w in wsl">
+                <a v-bind:href="w.url" v-html="w.name" target="_blank"></a>
+                ({{w.url}})
+                <span v-if="w.ms==undefined" class="connecting">连接中...(10秒超时)</span>
+                <span v-if="w.ms>=0" class="success">成功,用时{{w.ms/1000}}秒</span>
+                <span v-if="w.ms<0" class="failure">连接超时</span>
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data: {
+                wsl: []
+            },
+            created: function(){
+                var _self=this;
+                $.get("/website",function(data){
+                    _self.wsl = data;
+                    _self.wsl.forEach(function(w){
+                        $.get("/websiteTest?url="+w.url,function (ms) {
+                            Vue.set(w, 'ms', ms);
+                        })});
+                });
+            },
+            methods:{
+                f: function () {
+
+                }
+            }
+        })
+
+    </script>
+</body>
+</html>
