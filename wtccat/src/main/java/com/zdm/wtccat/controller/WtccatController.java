@@ -42,6 +42,9 @@ public class WtccatController {
     @PostMapping("/website")
     public void website(String name,String url) throws IOException {
         List<Map> wsl = getWsl();
+        if(wsl.stream().anyMatch(p->p.get("name").equals(name))
+                || name.contains(" ") || url.contains(" "))
+            return;
         var map = new HashMap();
         map.put("name",name);
         map.put("url",url);
