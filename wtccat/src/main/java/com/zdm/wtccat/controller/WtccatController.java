@@ -9,10 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.expression.Maps;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -55,17 +52,20 @@ public class WtccatController {
 
     @GetMapping("/websiteTest")
     public long websiteTest(String url) {
-        int code = 500;
+        int code;
         Instant i1 = Instant.now();
         try {
             URLConnection connection = new URL(url).openConnection();
             connection.setUseCaches(false);
             connection.setConnectTimeout(10*1000);
             code = ((HttpURLConnection) connection).getResponseCode();
-        }finally {
-            return code != 200 ? -1 :
-                    Duration.between(i1,Instant.now()).toMillis();
+        }catch (SocketTimeoutException e){
+            return -999;
+        }catch (Exception e){
+            return -1000;
         }
+        return code != 200 ? -code :
+                Duration.between(i1,Instant.now()).toMillis();
     }
 
     private List<Map> getWsl() throws IOException {

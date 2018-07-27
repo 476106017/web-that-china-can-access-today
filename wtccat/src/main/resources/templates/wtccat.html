@@ -25,7 +25,9 @@
                 ({{w.url}})
                 <span v-if="w.ms==undefined" class="connecting">连接中...(10秒超时)</span>
                 <span v-if="w.ms>=0" class="success">成功,用时{{w.ms/1000}}秒</span>
-                <span v-if="w.ms<0" class="failure">连接超时</span>
+                <span v-if="w.ms==-999" class="failure">连接超时</span>
+                <span v-if="w.ms==-1000" class="failure">连接失败</span>
+                <span v-if="w.ms<0 && w.ms>-999" class="failure">连接错误,错误码:{{-w.ms}}</span>
             </li>
         </ol>
     </div>
