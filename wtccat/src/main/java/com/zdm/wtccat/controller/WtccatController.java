@@ -1,5 +1,6 @@
 package com.zdm.wtccat.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -28,7 +29,8 @@ import java.util.stream.Collectors;
 @RestController
 public class WtccatController {
 
-    private static final Path PATH = Paths.get("wtccat\\src\\main\\resources\\website.txt");
+    @Autowired
+    private Path path;
 
     @GetMapping("/website")
     public List getWebsite() throws IOException {
@@ -66,8 +68,8 @@ public class WtccatController {
         }
     }
 
-    private static List<Map> getWsl() throws IOException {
-        return Files.lines(PATH)
+    private List<Map> getWsl() throws IOException {
+        return Files.lines(path)
                 .map(p -> {
                     var split = p.split(" ");
                     if (split.length!=2)
@@ -80,11 +82,11 @@ public class WtccatController {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
-    private static void writeWsl(List<Map> wsl) throws IOException {
+    private void writeWsl(List<Map> wsl) throws IOException {
         List<String> wsls = wsl.stream()
                 .map(p -> p.get("name") + " " + p.get("url"))
                 .collect(Collectors.toList());
-        Files.write(PATH,wsls);
+        Files.write(path,wsls);
     }
 
 }
